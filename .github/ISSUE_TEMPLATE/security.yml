@@ -1,0 +1,16 @@
+name: Security
+description: Security hardening or vulnerability
+title: "sec: "
+labels: ["type:security","priority:high","status:ready"]
+body:
+  - type: textarea
+    attributes:
+      label: Risk
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      value: "- [ ] Mitigation applied\n- [ ] Verified"
+    validations:
+      required: true

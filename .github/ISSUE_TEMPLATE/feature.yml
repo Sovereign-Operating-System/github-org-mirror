@@ -1,0 +1,16 @@
+name: Feature
+description: New capability
+title: "feat: "
+labels: ["type:feature","priority:medium","status:ready"]
+body:
+  - type: textarea
+    attributes:
+      label: Summary
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      value: "- [ ] Implemented\n- [ ] Documented\n- [ ] Tested"
+    validations:
+      required: true
