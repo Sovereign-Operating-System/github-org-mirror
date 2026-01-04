@@ -1,0 +1,17 @@
+name: Bug
+description: Report a defect
+title: "bug: "
+labels: ["type:bug","priority:high","status:ready"]
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      value: "- [ ] Fix verified\n- [ ] Tests updated/added (if applicable)"
+    validations:
+      required: true

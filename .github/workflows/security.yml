@@ -1,0 +1,32 @@
+name: security
+on:
+  pull_request: { branches: ["main"] }
+  schedule:
+    - cron: "0 9 * * 1"
+
+jobs:
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node audit (best-effort)
+        if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: npm audit
+        if: hashFiles('package.json') != ''
+        run: |
+          npm ci || true
+          npm audit --audit-level=high || true
+
+      - name: Python audit (best-effort)
+        if: hashFiles('requirements.txt', 'pyproject.toml') != ''
+        uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: pip-audit
+        if: hashFiles('requirements.txt', 'pyproject.toml') != ''
+        run: |
+          python -m pip install --upgrade pip
+          pip install pip-audit || true
+          if [ -f requirements.txt ]; then pip-audit -r requirements.txt || true; fi
