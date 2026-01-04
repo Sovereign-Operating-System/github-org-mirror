@@ -1,0 +1,26 @@
+# GitHub Org Mirror Configuration
+# Copy this to ~/.config/github-org-mirror/config.yaml
+
+# Base path for organization folders
+# Each org will have its own subdirectory here
+base_path: ~/Projects/orgs
+
+# List of GitHub organizations to sync
+organizations:
+  - MyOrganization1
+  - MyOrganization2
+  - MyOrganization3
+
+# How often to poll GitHub for changes (in seconds)
+# Only used for scheduled sync, not the watcher
+sync_interval: 300
+
+# Repositories to exclude from syncing
+exclude_repos:
+  - .github
+
+# Automatically update git remote URLs after transfers
+auto_update_remotes: true
+
+# Protocol for cloning repos: 'ssh' or 'https'
+clone_protocol: ssh
