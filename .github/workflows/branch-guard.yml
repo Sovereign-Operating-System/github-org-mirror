@@ -1,0 +1,20 @@
+name: branch-guard
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch name
+        run: |
+          BR="${{ github.head_ref }}"
+          echo "Branch: $BR"
+          if echo "$BR" | grep -Eq '^agent/(claude|codex|copilot|spark|human)/(feat|fix|chore|docs|sec|refactor)/[0-9]+-[a-z0-9-]+'; then
+            echo "OK"
+          else
+            echo "Branch name violates SOS canon."
+            echo "Expected: agent/<agent>/<type>/<issue>-<slug>"
+            exit 1
+          fi

@@ -1,0 +1,28 @@
+name: release
+on:
+  push: { branches: ["main"] }
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create build tag
+        id: t
+        run: |
+          SHORT_SHA="$(echo "${GITHUB_SHA}" | cut -c1-7)"
+          TAG="build-$(date -u +%Y%m%d)-${SHORT_SHA}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.t.outputs.tag }}
+          name: ${{ steps.t.outputs.tag }}
+          generate_release_notes: true

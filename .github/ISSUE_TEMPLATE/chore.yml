@@ -1,0 +1,16 @@
+name: Chore
+description: Maintenance / tooling
+title: "chore: "
+labels: ["type:chore","priority:medium","status:ready"]
+body:
+  - type: textarea
+    attributes:
+      label: Work
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Acceptance Criteria
+      value: "- [ ] Completed\n- [ ] CI green"
+    validations:
+      required: true

@@ -1,0 +1,12 @@
+name: canon-guard
+on:
+  pull_request:
+    branches: ["main"]
+jobs:
+  canon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Canon drift guard
+        run: bash scripts/canon_drift_check.sh
