@@ -1,0 +1,39 @@
+name: IP Canon Guard
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  ip-canon-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure IP_CANON.md exists
+        run: |
+          if [ ! -f IP_CANON.md ]; then
+            echo "❌ IP_CANON.md is missing. Builds must include the IP canon." >&2
+            exit 1
+          fi
+
+      - name: Prevent unauthorized deletion or modification
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q '^IP_CANON.md'; then
+            if ! echo "${{ toJson(github.event.pull_request.labels.*.name) }}" | grep -q 'ip-change'; then
+              echo "❌ IP_CANON.md modified without 'ip-change' label." >&2
+              exit 1
+            fi
+          fi
+
+      - name: Enforce IP footer (check-only)
+        run: |
+          test -f scripts/ip_footer_inject.sh || { echo "❌ Missing injector script"; exit 1; }
+          bash scripts/ip_footer_inject.sh --check
