@@ -1,0 +1,64 @@
+name: Docs Guard
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  docs-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required documentation
+        run: |
+          missing=()
+
+          # Required root docs
+          for doc in README.md CONTRIBUTING.md SECURITY.md; do
+            if [ ! -f "$doc" ]; then
+              missing+=("$doc")
+            fi
+          done
+
+          # Required docs folder structure
+          if [ ! -d "docs" ]; then
+            missing+=("docs/")
+          else
+            for doc in docs/README.md; do
+              if [ ! -f "$doc" ]; then
+                missing+=("$doc")
+              fi
+            done
+          fi
+
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Missing required documentation:"
+            printf '  - %s\n' "${missing[@]}"
+            exit 1
+          fi
+
+          echo "All required documentation present"
+
+      - name: Check docs not empty
+        run: |
+          empty=()
+
+          for doc in README.md CONTRIBUTING.md SECURITY.md; do
+            if [ -f "$doc" ]; then
+              lines=$(wc -l < "$doc" | tr -d ' ')
+              if [ "$lines" -lt 5 ]; then
+                empty+=("$doc (only $lines lines)")
+              fi
+            fi
+          done
+
+          if [ ${#empty[@]} -gt 0 ]; then
+            echo "::warning::Documentation files appear incomplete:"
+            printf '  - %s\n' "${empty[@]}"
+          fi
